@@ -47,17 +47,48 @@ ${reset}
 EOF
 }
 
+# Domain Scan function
 domainScan() {
-    # Domain scan logic here...
-    echo "Performing domain scan..."
-    echo "$domain" | assetfinder --subs-only | httpx -silent -content-length -title -status-code -mc 200,301,302,307,308,403,401,405,406,500,501,502,503 -follow-redirects -vhost -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3' -H 'Referer: https://www.google.com/' -H 'Connection: close' -H 'Upgrade-Insecure-Requests: 1' -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate, br' -H 'Accept-Language: en-US,en;q=0.9' -H 'Cache-Control: max-age=0' -H 'Content-Type: text/plain' -timeout 3 -retries 2 -threads 300 | anew | grep -E '\[200\]|\[301\]|\[302\]|\[307\]|\[308\]|\[403\]|\[401\]|\[405\]|\[406\]|\[500\]|\[501\]|\[502\]|\[503\]' | sort -u
+  echo "Performing domain scan..."
+  gau -subs $1 | grep "=" | httpx -silent -mc 200 | grep $2 | anew -q $3
 }
 
+# List Scan function
 listScan() {
-    # List scan logic here...
-    echo "Performing list scan..."
-    cat $list | httpx -silent -content-length -title -status-code -mc 200,301,302,307,308,403,401,405,406,500,501,502,503 -follow-redirects -vhost -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3' -H 'Referer: https://www.google.com/' -H 'Connection: close' -H 'Upgrade-Insecure-Requests: 1' -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate, br' -H 'Accept-Language: en-US,en;q=0.9' -H 'Cache-Control: max-age=0' -H 'Content-Type: text/plain' -timeout 3 -retries 2 -threads 300 | anew | grep -E '\[200\]|\[301\]|\[302\]|\[307\]|\[308\]|\[403\]|\[401\]|\[405\]|\[406\]|\[500\]|\[501\]|\[502\]|\[503\]' | sort -u
+  echo "Performing list scan..."
+  cat $1 | httpx -silent -mc 200 | grep $2 | anew -q $3
 }
+
+
+
+# Main function
+main() {
+  echo "Log4j Vulnerability Scanner"
+  echo "Please select an option:"
+  echo "1. Domain Scan"
+  echo "2. List Scan"
+  read -p "Choice: " choice
+
+  case $choice in
+    1)
+      read -p "Enter a domain: " domain
+      read -p "Enter a pattern to match: " pattern
+      read -p "Enter output file: " output
+      domainScan $domain $pattern $output
+      ;;
+    2)
+      read -p "Enter a list file: " list
+      read -p "Enter a pattern to match: " pattern
+      read -p "Enter output file: " output
+      listScan $list $pattern $output
+      ;;
+    *)
+      echo "Invalid choice, exiting..."
+      exit 1
+  esac
+}
+
+main
 
 # Parse arguments
 while (( "$#" )); do
