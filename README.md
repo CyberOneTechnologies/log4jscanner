@@ -22,11 +22,11 @@ The script requires the following utilities:
 
 Please ensure these utilities are installed and accessible in your PATH.
 
-### Python Install Requirements
-You can install the Python dependencies with pip:
+### Install Dependancies 
+You can install the dependancies on Kali or Debian system with the following commands.
 
 ```
-pip install -r requirements.txt
+sudo apt-get install curl gau httpx anew -y
 ```
 
 
