@@ -68,8 +68,15 @@ cd anew
 Install with Golang
 
 ```
-go install -v github.com/tomnomnom/anew@latest
+go build -buildvcs=false
 ```
+
+Move the anew file to the bin directory so it is in the path folder
+
+```
+sudo mv anew /usr/local/bin/
+```
+
 
 
 
