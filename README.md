@@ -22,6 +22,14 @@ The script requires the following utilities:
 
 Please ensure these utilities are installed and accessible in your PATH.
 
+### Python Install Requirements
+You can install the Python dependencies with pip:
+
+```
+pip install -r requirements.txt
+```
+
+
 ## Usage
 Navigate to the cloned repository:
 
