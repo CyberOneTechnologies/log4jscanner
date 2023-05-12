@@ -26,8 +26,51 @@ Please ensure these utilities are installed and accessible in your PATH.
 You can install the dependancies on Kali or Debian system with the following commands.
 
 ```
-sudo apt-get install curl gau httpx anew -y
+sudo apt install getallurls -y && sudo aptitude install subfinder -y && sudo apt install httpx-toolkit -y
 ```
+
+# Install Golang
+To install anew you need to first install Golang
+
+## First, install the package
+sudo apt install -y golang
+
+### Then add the following to your .bashrc
+edit your .bashrc file - located in your home directory. "sudo nano ~/.bashrc"
+
+```
+export GOROOT=/usr/lib/go
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+```
+
+### Reload your .bashrc
+
+```
+source .bashrc
+```
+
+
+Install the program "anew"
+
+```
+sudo git clone https://github.com/tomnomnom/anew.git
+```
+
+
+
+Change to the new directory
+
+```
+cd anew
+```
+
+Install with Golang
+
+```
+go install -v github.com/tomnomnom/anew@latest
+```
+
 
 
 ## Usage
