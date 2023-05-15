@@ -43,10 +43,10 @@ This script uses a template HTML file named vulnreport.html to generate the repo
 
 
 # Troubleshooting
-- If the script is not executing, ensure that you have made it executable using the "**chmod +x log4jscanner.sh**" command.
-- Make sure that "**curl**" is installed on your machine.
-- If the report is not generated, make sure the "**vulnreport.html**" file exists in the same directory as the script.
-- If the report does not contain the correct data, ensure that the placeholders in the "**vulnreport.html**" file match exactly with the ones specified in the Usage section.
+- If the script is not executing, ensure that you have made it executable using the **`chmod +x log4jscanner.sh`** command.
+- Make sure that **`curl`** is installed on your machine.
+- If the report is not generated, make sure the **`vulnreport.html`** file exists in the same directory as the script.
+- If the report does not contain the correct data, ensure that the placeholders in the **`vulnreport.html`** file match exactly with the ones specified in the Usage section.
 
 
 ##Disclaimer
