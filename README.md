@@ -33,10 +33,10 @@ This repository contains a shell script to check for the Log4j vulnerability. It
 
 When you run the script, you will be prompted with three options:
 
-**1) Enter an IP Address to test**
-**2) Enter a URL to test**
-**3) Enter a file of targets to test**
-**For option 3, you should provide the full path to the file (format: /folder/file.txt).**
+**1) Enter an IP Address to test**<br>
+**2) Enter a URL to test**<br>
+**3) Enter a file of targets to test**<br>
+**For option 3, you should provide the full path to the file (format: /folder/file.txt).**<br>
 
 ## Dependencies
 This script uses curl to send requests. Please ensure you have it installed on your system.
