@@ -38,7 +38,8 @@ This script uses a template HTML file named vulnreport.html to generate the repo
 - **Testing_Company:** This will be replaced by the name of the company doing the testing.
 - **Tested_Company:** This will be replaced by the name of the company being tested.
 - **TestResults:** This will be replaced by the overall test result status.
-- **"<!-- Individual results will be inserted here -->"**: This comment will be replaced by a table containing individual test results.
+- `<!-- Individual results will be inserted here -->`: This comment will be replaced by a table containing individual test results in the generated HTML report. Note that it is an HTML comment and won't be visible in the rendered HTML.
+
 
 
 # Troubleshooting
