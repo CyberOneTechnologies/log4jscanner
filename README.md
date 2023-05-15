@@ -1,60 +1,58 @@
-# **Log4j Vulnerability Scanner**
+# Log4J Vulnerability Scanner
+## Description
+This script helps you to scan and identify if your server or a list of servers is vulnerable to the infamous Log4j (log4shell) vulnerability.
 
-This repository contains a shell script to check for the Log4j vulnerability. It can scan a single IP address, a single URL, or multiple targets listed in a file.
+## Installation
+Clone this repository to your local machine.
 
-## **Setup**
+```
+git clone https://github.com/CyberOneTechnologies/log4jscanner.git
+```
 
-1. **Clone the repository:**<br>
-    ```
-    git clone https://github.com/CyberOneTechnologies/log4jscanner.git
-    ```
-	
-2. **Navigate to the cloned directory:**<br>
-    ```
-    cd log4jscanner
-    ```
-	
-3. **Make the script executable:**<br>
-    ```
-    chmod +x log4jscanner.sh
-    ```
+Make the log4jscanner.sh script executable.
 
+```
+chmod +x log4jscanner.sh
+```
 
-## **Usage**
+Make sure you have curl installed on your machine. If not, you can install it using the following command.
 
-**Run the script and follow the prompts:**<br>
-    ```
+```
+sudo apt-get install curl
+```
+
+## Usage
+Run the script using the following command.
+
+```
 ./log4jscanner.sh
-    ```
+```
+
+Follow the prompts to scan a single IP, URL, or a file containing a list of targets.
+If desired, generate a report after the scan. The report will be saved as an HTML file.
 
 
+## vulnreport.html File
+This script uses a template HTML file named vulnreport.html to generate the report. The vulnreport.html file should contain the following placeholders:
 
-# Guide
+- **Testing_Company:** This will be replaced by the name of the company doing the testing.
+- **Tested_Company:** This will be replaced by the name of the company being tested.
+- **TestResults:** This will be replaced by the overall test result status.
+- **<!-- Individual results will be inserted here -->**: This comment will be replaced by a table containing individual test results.
 
-When you run the script, you will be prompted with three options:
-
-**1) Enter an IP Address to test**<br>
-**2) Enter a URL to test**<br>
-**3) Enter a file of targets to test**<br>
-**For option 3, you should provide the full path to the file (format: /folder/file.txt).**<br>
-
-## Dependencies
-This script uses curl to send requests. Please ensure you have it installed on your system.
 
 # Troubleshooting
-If you encounter issues when running the script:
+- If the script is not executing, ensure that you have made it executable using the "**chmod +x log4jscanner.sh**" command.
+- Make sure that "**curl**" is installed on your machine.
+- If the report is not generated, make sure the "**vulnreport.html**" file exists in the same directory as the script.
+- If the report does not contain the correct data, ensure that the placeholders in the "**vulnreport.html**" file match exactly with the ones specified in the Usage section.
 
-Ensure that curl is installed and accessible in your system PATH.
-Verify that the targets are reachable and that your network allows outbound HTTP/HTTPS requests.
-Check the format of your input. If you are using a file for the targets, ensure it is formatted correctly with one target per line.
-Important Notice
-This script is a basic demonstration and might not identify all instances of the Log4j vulnerability. Please use more sophisticated tools and methods for a comprehensive security assessment.
 
-Always run this script on systems you have permission to scan. Unauthorized scanning can be considered illegal.
+##Disclaimer
+This tool is meant for educational purposes only. Any misuse of this tool will not be the responsibility of the author. Always get proper authorization before performing any penetration testing.
 
-This script doesn't remediate the vulnerability. If you find a server that is vulnerable, immediately apply patches or other mitigations.
+## Contact
+If you have any questions, feel free to contact us.
 
-# License
-This project is licensed under the MIT License - see the LICENSE.md file for details.
-
-This revised `README.md` includes bold fonts, headers at different levels, and a new troubleshooting section. As before, replace the GitHub URL with your actual repository URL, and update the license information if you're using a different license.
+## License
+This project is licensed under the MIT License.
