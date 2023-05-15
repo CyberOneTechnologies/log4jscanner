@@ -1,127 +1,60 @@
-# Log4J Scanner
+# **Log4j Vulnerability Scanner**
 
-This script, `log4jscanner.sh`, is a bash script designed to scan for potentially vulnerable log4j instances. The script takes a domain or a list of URLs as input and performs a scan to detect potential vulnerabilities.
+This repository contains a shell script to check for the Log4j vulnerability. It can scan a single IP address, a single URL, or multiple targets listed in a file.
 
-## Installation
+## **Setup**
 
-To install and use this script, first clone the repository from Github:
+1. **Clone the repository:**
+    ```
+    git clone https://github.com/yourusername/log4j-scanner.git
+    ```
+	
+2. **Navigate to the cloned directory:**
+    ```
+    cd log4j-scanner
+    ```
+	
+3. **Make the script executable:**
+    ```
+    chmod +x log4j_scanner.sh
+    ```
 
-```
-git clone https://github.com/CyberOneTechnologies/log4jscanner.git
-```
 
-This command will create a new directory log4jscanner with the script log4jscanner.sh inside it.
+## **Usage**
+
+**Run the script and follow the prompts:**
+    ```
+./log4j_scanner.sh
+    ```
+
+
+
+# Guide
+
+When you run the script, you will be prompted with three options:
+
+**1) Enter an IP Address to test**
+**2) Enter a URL to test**
+**3) Enter a file of targets to test**
+**For option 3, you should provide the full path to the file (format: /folder/file.txt).**
 
 ## Dependencies
-The script requires the following utilities:
+This script uses curl to send requests. Please ensure you have it installed on your system.
 
-* curl
-* gau
-* httpx
-* anew
+# Troubleshooting
+If you encounter issues when running the script:
 
-Please ensure these utilities are installed and accessible in your PATH.
+Ensure that curl is installed and accessible in your system PATH.
+Verify that the targets are reachable and that your network allows outbound HTTP/HTTPS requests.
+Check the format of your input. If you are using a file for the targets, ensure it is formatted correctly with one target per line.
+Important Notice
+This script is a basic demonstration and might not identify all instances of the Log4j vulnerability. Please use more sophisticated tools and methods for a comprehensive security assessment.
 
-### Install Dependancies 
-You can install the dependancies on Kali or Debian system with the following commands.
+Always run this script on systems you have permission to scan. Unauthorized scanning can be considered illegal.
 
-```
-sudo apt install getallurls -y && sudo aptitude install subfinder -y && sudo apt install httpx-toolkit -y
-```
+This script doesn't remediate the vulnerability. If you find a server that is vulnerable, immediately apply patches or other mitigations.
 
-# Install Golang
-To install anew you need to first install Golang
+# License
+This project is licensed under the MIT License - see the LICENSE.md file for details.
 
-## First, install the package
-sudo apt install -y golang
-
-### Then add the following to your .bashrc
-edit your .bashrc file - located in your home directory. "sudo nano ~/.bashrc"
-
-```
-export GOROOT=/usr/lib/go
-export GOPATH=$HOME/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-```
-
-### Reload your .bashrc
-
-```
-source .bashrc
-```
-
-
-Install the program "anew"
-
-```
-sudo git clone https://github.com/tomnomnom/anew.git
-```
-
-
-
-Change to the new directory
-
-```
-cd anew
-```
-
-Install with Golang
-
-```
-go build -buildvcs=false
-```
-
-Move the anew file to the bin directory so it is in the path folder
-
-```
-sudo mv anew /usr/local/bin/
-```
-
-
-
-
-## Usage
-Navigate to the cloned repository:
-
-```
-cd log4jscanner
-```
-
-Make the script executable:
-
-```
-chmod +x log4jscanner.sh
-```
-
-To scan a specific domain:
-
-```
-./log4jscanner.sh -d example.com
-```
-
-To scan a list of URLs:
-
-```
-./log4jscanner.sh -l url_list.txt
-```
-
-To use with Burp Collaborator:
-
-```
-./log4jscanner.sh -d example.com -b your_burpcollabid
-```
-
-
-## Help
-
-For more information, you can display the help message with:
-
-```
-./log4jscanner.sh -h
-```
-
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-This project is licensed under the MIT License - see the *LICENSE.md* file for details. Please note that this license is intended for private use only.
+This revised `README.md` includes bold fonts, headers at different levels, and a new troubleshooting section. As before, replace the GitHub URL with your actual repository URL, and update the license information if you're using a different license.
