@@ -4,17 +4,17 @@ This repository contains a shell script to check for the Log4j vulnerability. It
 
 ## **Setup**
 
-1. **Clone the repository:**
+1. **Clone the repository:**<br>
     ```
     git clone https://github.com/CyberOneTechnologies/log4jscanner.git
     ```
 	
-2. **Navigate to the cloned directory:**
+2. **Navigate to the cloned directory:**<br>
     ```
     cd log4jscanner
     ```
 	
-3. **Make the script executable:**
+3. **Make the script executable:**<br>
     ```
     chmod +x log4jscanner.sh
     ```
@@ -22,7 +22,7 @@ This repository contains a shell script to check for the Log4j vulnerability. It
 
 ## **Usage**
 
-**Run the script and follow the prompts:**
+**Run the script and follow the prompts:**<br>
     ```
 ./log4jscanner.sh
     ```
